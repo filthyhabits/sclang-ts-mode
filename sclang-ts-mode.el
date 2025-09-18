@@ -414,127 +414,127 @@
 (if (featurep 'sclang-mode)
     (progn
       ;;;###autoload
-(defun sclang-ts-test-specific-method ()
-  "Test highlighting for the specific method structure we found."
-  (interactive)
-  (when (treesit-ready-p 'supercollider)
-    ;; Test the exact pattern from the tree structure
-    (setq-local treesit-font-lock-settings
-                (treesit-font-lock-rules
-                 :language supercollider
-                 :feature test
-                 :override t
-                 ;; Test just method_name nodes
-                 ((method_name) @font-lock-warning-face)))
-    (setq-local treesit-font-lock-feature-list '((test)))
-    (setq-local treesit-font-lock-level 4)
-    (font-lock-flush)
-    (font-lock-ensure)
-    (message "Testing direct method_name pattern - 'kr' should be yellow/orange")))
+      (defun sclang-ts-test-specific-method ()
+	"Test highlighting for the specific method structure we found."
+	(interactive)
+	(when (treesit-ready-p 'supercollider)
+	  ;; Test the exact pattern from the tree structure
+	  (setq-local treesit-font-lock-settings
+                      (treesit-font-lock-rules
+                       :language supercollider
+                       :feature test
+                       :override t
+                       ;; Test just method_name nodes
+                       ((method_name) @font-lock-warning-face)))
+	  (setq-local treesit-font-lock-feature-list '((test)))
+	  (setq-local treesit-font-lock-level 4)
+	  (font-lock-flush)
+	  (font-lock-ensure)
+	  (message "Testing direct method_name pattern - 'kr' should be yellow/orange")))
 
 ;;;###autoload
-(defun sclang-ts-debug-method-nodes ()
-  "Debug method nodes by showing all nodes in the tree."
-  (interactive)
-  (when (treesit-ready-p 'supercollider)
-    (let ((root (treesit-buffer-root-node)))
-      (when root
-        (with-current-buffer (get-buffer-create "*sclang-ts-node-debug*")
-          (erase-buffer)
-          (insert "=== All Tree-sitter Nodes ===\n\n")
-          (sclang-ts--walk-tree root 0)
-          (display-buffer (current-buffer)))))))
+      (defun sclang-ts-debug-method-nodes ()
+	"Debug method nodes by showing all nodes in the tree."
+	(interactive)
+	(when (treesit-ready-p 'supercollider)
+	  (let ((root (treesit-buffer-root-node)))
+	    (when root
+              (with-current-buffer (get-buffer-create "*sclang-ts-node-debug*")
+		(erase-buffer)
+		(insert "=== All Tree-sitter Nodes ===\n\n")
+		(sclang-ts--walk-tree root 0)
+		(display-buffer (current-buffer)))))))
 
-(defun sclang-ts--walk-tree (node depth)
-  "Walk the tree-sitter tree and print all nodes."
-  (let ((indent (make-string (* depth 2) ? ))
-        (type (treesit-node-type node))
-        (text (treesit-node-text node t)))
-    (insert (format "%s%s" indent type))
-    (when (< (length text) 50)
-      (insert (format ": %S" text)))
-    (insert "\n"))
-  (dolist (child (treesit-node-children node))
-    (sclang-ts--walk-tree child (1+ depth))))
-
-;;;###autoload
-(defun sclang-ts-test-all-method-patterns ()
-  "Test multiple method highlighting patterns."
-  (interactive)
-  (when (treesit-ready-p 'supercollider)
-    ;; Try multiple patterns to see which one works
-    (setq-local treesit-font-lock-settings
-                (treesit-font-lock-rules
-                 :language supercollider
-                 :feature test
-                 :override t
-                 ;; Pattern 1: Direct method_name
-                 ((method_name) @font-lock-warning-face)
-                 ;; Pattern 2: Method name in method call
-                 ((method_call (method_name) @font-lock-error-face))
-                 ;; Pattern 3: With field name
-                 ((method_call name: (method_name) @font-lock-success-face))
-                 ;; Pattern 4: Any node containing "method"
-                 ((method_call) @font-lock-info-face)))
-    (setq-local treesit-font-lock-feature-list '((test)))
-    (setq-local treesit-font-lock-level 4)
-    (font-lock-flush)
-    (font-lock-ensure)
-    (message "Applied multiple test patterns - check colors")))
+      (defun sclang-ts--walk-tree (node depth)
+	"Walk the tree-sitter tree and print all nodes."
+	(let ((indent (make-string (* depth 2) ? ))
+              (type (treesit-node-type node))
+              (text (treesit-node-text node t)))
+	  (insert (format "%s%s" indent type))
+	  (when (< (length text) 50)
+	    (insert (format ": %S" text)))
+	  (insert "\n"))
+	(dolist (child (treesit-node-children node))
+	  (sclang-ts--walk-tree child (1+ depth))))
 
 ;;;###autoload
-(defun sclang-ts-inspect-node-at-point ()
-  "Show the tree-sitter node type at point for debugging."
-  (interactive)
-  (when (treesit-ready-p 'supercollider)
-    (let ((node (treesit-node-at (point))))
-      (if node
-          (message "Node at point: %s (parent: %s)" 
-                   (treesit-node-type node)
-                   (treesit-node-type (treesit-node-parent node)))
-        (message "No tree-sitter node at point")))))
+      (defun sclang-ts-test-all-method-patterns ()
+	"Test multiple method highlighting patterns."
+	(interactive)
+	(when (treesit-ready-p 'supercollider)
+	  ;; Try multiple patterns to see which one works
+	  (setq-local treesit-font-lock-settings
+                      (treesit-font-lock-rules
+                       :language supercollider
+                       :feature test
+                       :override t
+                       ;; Pattern 1: Direct method_name
+                       ((method_name) @font-lock-warning-face)
+                       ;; Pattern 2: Method name in method call
+                       ((method_call (method_name) @font-lock-error-face))
+                       ;; Pattern 3: With field name
+                       ((method_call name: (method_name) @font-lock-success-face))
+                       ;; Pattern 4: Any node containing "method"
+                       ((method_call) @font-lock-info-face)))
+	  (setq-local treesit-font-lock-feature-list '((test)))
+	  (setq-local treesit-font-lock-level 4)
+	  (font-lock-flush)
+	  (font-lock-ensure)
+	  (message "Applied multiple test patterns - check colors")))
 
 ;;;###autoload
-(defun sclang-ts-refresh-highlighting ()
-  "Refresh tree-sitter syntax highlighting in current buffer."
-  (interactive)
-  (when (and (treesit-ready-p 'supercollider)
-             (treesit-parser-list))
-    (setq-local treesit-font-lock-level 4)
-    (font-lock-flush)
-    (font-lock-ensure)
-    (message "SuperCollider syntax highlighting refreshed")))
+      (defun sclang-ts-inspect-node-at-point ()
+	"Show the tree-sitter node type at point for debugging."
+	(interactive)
+	(when (treesit-ready-p 'supercollider)
+	  (let ((node (treesit-node-at (point))))
+	    (if node
+		(message "Node at point: %s (parent: %s)" 
+			 (treesit-node-type node)
+			 (treesit-node-type (treesit-node-parent node)))
+              (message "No tree-sitter node at point")))))
 
 ;;;###autoload
-(defun sclang-ts-debug-info ()
-  "Show debug information for SuperCollider tree-sitter setup."
-  (interactive)
-  (let ((original-buffer (current-buffer))
-        (grammar-available (treesit-ready-p 'supercollider))
-        (parsers (when (boundp 'treesit-parser-list)
-                   (treesit-parser-list)))
-        (font-lock-mode (bound-and-true-p font-lock-mode))
-        (treesit-font-lock (bound-and-true-p treesit-font-lock-mode))
-        (feature-list (when (boundp 'treesit-font-lock-feature-list)
-                        treesit-font-lock-feature-list))
-        (font-lock-level (when (boundp 'treesit-font-lock-level)
-                           treesit-font-lock-level)))
-    (with-current-buffer (get-buffer-create "*sclang-ts-debug*")
-      (erase-buffer)
-      (insert "=== SuperCollider Tree-sitter Debug Info ===\n\n")
-      (insert (format "Original buffer: %s\n" (buffer-name original-buffer)))
-      (insert (format "Major mode: %s\n" (with-current-buffer original-buffer major-mode)))
-      (insert (format "Grammar available: %s\n" grammar-available))
-      (insert (format "Font-lock mode: %s\n" font-lock-mode))
-      (insert (format "Tree-sitter font-lock mode: %s\n" treesit-font-lock))
-      (insert (format "Active parsers: %s\n" parsers))
-      (insert (format "Emacs version: %s\n" emacs-version))
-      (insert (format "Tree-sitter available: %s\n" (treesit-available-p)))
-      (when grammar-available
-        (insert "\n=== Font-lock features ===\n")
-        (insert (format "Feature list: %s\n" feature-list))
-        (insert (format "Font-lock level: %s\n" font-lock-level)))
-      (display-buffer (current-buffer)))))
+      (defun sclang-ts-refresh-highlighting ()
+	"Refresh tree-sitter syntax highlighting in current buffer."
+	(interactive)
+	(when (and (treesit-ready-p 'supercollider)
+		   (treesit-parser-list))
+	  (setq-local treesit-font-lock-level 4)
+	  (font-lock-flush)
+	  (font-lock-ensure)
+	  (message "SuperCollider syntax highlighting refreshed")))
+
+;;;###autoload
+      (defun sclang-ts-debug-info ()
+	"Show debug information for SuperCollider tree-sitter setup."
+	(interactive)
+	(let ((original-buffer (current-buffer))
+              (grammar-available (treesit-ready-p 'supercollider))
+              (parsers (when (boundp 'treesit-parser-list)
+			 (treesit-parser-list)))
+              (font-lock-mode (bound-and-true-p font-lock-mode))
+              (treesit-font-lock (bound-and-true-p treesit-font-lock-mode))
+              (feature-list (when (boundp 'treesit-font-lock-feature-list)
+                              treesit-font-lock-feature-list))
+              (font-lock-level (when (boundp 'treesit-font-lock-level)
+				 treesit-font-lock-level)))
+	  (with-current-buffer (get-buffer-create "*sclang-ts-debug*")
+	    (erase-buffer)
+	    (insert "=== SuperCollider Tree-sitter Debug Info ===\n\n")
+	    (insert (format "Original buffer: %s\n" (buffer-name original-buffer)))
+	    (insert (format "Major mode: %s\n" (with-current-buffer original-buffer major-mode)))
+	    (insert (format "Grammar available: %s\n" grammar-available))
+	    (insert (format "Font-lock mode: %s\n" font-lock-mode))
+	    (insert (format "Tree-sitter font-lock mode: %s\n" treesit-font-lock))
+	    (insert (format "Active parsers: %s\n" parsers))
+	    (insert (format "Emacs version: %s\n" emacs-version))
+	    (insert (format "Tree-sitter available: %s\n" (treesit-available-p)))
+	    (when grammar-available
+              (insert "\n=== Font-lock features ===\n")
+              (insert (format "Feature list: %s\n" feature-list))
+              (insert (format "Font-lock level: %s\n" font-lock-level)))
+	    (display-buffer (current-buffer)))))
 
 ;;;###autoload
       (define-derived-mode sclang-ts-mode sclang-mode "SuperCollider[TS]"
