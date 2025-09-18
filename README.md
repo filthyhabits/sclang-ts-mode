@@ -9,6 +9,9 @@ Based on the great SuperCollider [grammar](https://github.com/madskjeldgaard/tre
 Hopefully someone can use this as a starting point for a more solid version.
 
 ## Usage
+
+After setting up sclang-mode:
+
 ```
 (add-to-list 'load-path "path/to/sclang-ts-mode.el")
 (require 'sclang-ts-mode)
