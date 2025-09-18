@@ -4,7 +4,7 @@ Experimental enhanced Emacs SuperCollider mode using tree-sitter for syntax high
 
 Created with insufficiant knowledge of any of the involved fields: SuperCollider syntax and indentation, Tree-sitter, Emacs, Elisp etc.
 
-Based on the great SuperCollider [grammar](https://github.com/madskjeldgaard/tree-sitter-supercollider) work by Mads Kjekdgaard and contributers.
+Based on the great SuperCollider [grammar](https://github.com/madskjeldgaard/tree-sitter-supercollider) work by [Mads Kjeldgaard](https://madskjeldgaard.dk) and contributers.
 
 Hopefully someone can use this as a starting point for a more solid version.
 
