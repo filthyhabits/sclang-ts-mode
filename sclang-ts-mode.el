@@ -236,7 +236,7 @@
                                (current-indentation))))
             (indent-to (+ base-indent sclang-ts-indent-level))))))
      
-     ;; Case 3: Normal newline for everything else
+     ;; Case 3: Everything else
      (t (progn
           (newline)
           ;; Use temporary content to help tree-sitter understand the context
