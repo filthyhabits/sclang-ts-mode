@@ -237,7 +237,12 @@
             (indent-to (+ base-indent sclang-ts-indent-level))))))
      
      ;; Case 3: Normal newline for everything else
-     (t (newline-and-indent)))))
+     (t (progn
+          (newline)
+          ;; Use temporary content to help tree-sitter understand the context
+          (insert "x")
+          (indent-according-to-mode)
+          (delete-char -1))))))
 
 (defun sclang-ts--should-indent-after-delimiter (delimiter)
   "Determine if we should indent after DELIMITER based on context."
