@@ -236,13 +236,19 @@
                                (current-indentation))))
             (indent-to (+ base-indent sclang-ts-indent-level))))))
      
-     ;; Case 3: Everything else
+     ;; Case 3: Normal newline for everything else - WITH CONDITIONAL TEMPORARY CONTENT TRICK
      (t (progn
           (newline)
-          ;; Use temporary content to help tree-sitter understand the context
-          (insert "x")
-          (indent-according-to-mode)
-          (delete-char -1))))))
+          ;; Only use temporary content trick if rest of line is empty/whitespace
+          (if (string-match-p "\\`\\s-*$" 
+                              (buffer-substring-no-properties (point) (line-end-position)))
+              (progn
+                ;; Use temporary content to help tree-sitter understand the context
+                (insert "x")
+                (indent-according-to-mode)
+                (delete-char -1))
+            ;; Rest of line has content, normal indentation should work
+            (indent-according-to-mode)))))))
 
 (defun sclang-ts--should-indent-after-delimiter (delimiter)
   "Determine if we should indent after DELIMITER based on context."
